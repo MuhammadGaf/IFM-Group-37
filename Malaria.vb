@@ -1,7 +1,16 @@
-﻿'Option statements:
+﻿' *****************************************************************
+' Team Number: 37
+' Team Member 1 Details: Mpiana, MK (219062231)
+' Team Member 2 Details: Gaffar, M (222083957)
+' Team Member 3 Details: Khumalo, LS (222049196)
+' Team Member 4 Details: Dibilwane, P (222019464)
+' Practical: Team Project
+' Class name: Malaria
+' *****************************************************************
+'Option Statements
 Option Strict On
-Option Infer Off
 Option Explicit On
+Option Infer Off
 
 Public Class Malaria
     Inherits Disease
@@ -11,12 +20,16 @@ Public Class Malaria
     Private _MalariaParasite As String
 
     Public Sub New()
+        'increase the number of people infected by disease
+        _nInfected(DiseaseNo.Malaria) += 1
     End Sub
     Public Sub New(Type As String, NoAreas As Integer, Parasite As String)
         _TypeOfMosquito = Type
         AreasAffected = NoAreas
         _MalariaParasite = Parasite
         ReDim _AreaName(NoAreas)
+        'increase the number of people infected by disease
+        _nInfected(DiseaseNo.Malaria) += 1
     End Sub
     Public Property TypeOfMosquito As String
         Set(value As String)
@@ -36,6 +49,7 @@ Public Class Malaria
     End Property
     Public Property AreasAffected As Integer
         Set(value As Integer)
+            ValidateInt(value)
             _AreasAffected = value
         End Set
         Get
@@ -51,6 +65,8 @@ Public Class Malaria
             Return _MalariaParasite
         End Get
     End Property
+
+    'Utilty Methods
     Public Function HighRiskArea() As String
         'person instnace
         ' if statement if in congo, 
@@ -59,11 +75,11 @@ Public Class Malaria
         ReDim NumInfected(_AreasAffected)
         Dim HighRisk As Integer
         Dim HighRiskIDX As String
-        NumInfected(1) = nInfected
+        NumInfected(1) = nInfected(DiseaseNo.Malaria) '???????
         HighRisk = NumInfected(1)
         HighRiskIDX = _AreaName(1)
         For A As Integer = 1 To _AreasAffected
-            NumInfected(A) = nInfected
+            NumInfected(A) = nInfected(DiseaseNo.Malaria)
             If NumInfected(A) >= HighRisk Then
                 HighRisk = NumInfected(A)
                 HighRiskIDX = _AreaName(A)
