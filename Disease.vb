@@ -11,36 +11,38 @@
 Option Strict On
 Option Explicit On
 Option Infer Off
-Public MustInherit Class Disease 'Abstract Class
-    Public Enum Array 'enum that lists arrays in class and gives them a constant value
-        Symtomps = 0
-        Treatments = 1
-    End Enum
 
+Public Enum ClassArray 'enum that lists arrays in class and gives them a constant value
+    Symptoms = 0
+    Treatments = 1
+End Enum
+Public Enum DiseaseNo
+    Malaria = 1
+    HIVAIDS = 2
+End Enum
+
+Public MustInherit Class Disease 'Abstract Class
     'Member Attributes
     Protected _Name As String
-    Protected _Symtomps() As String
+    Protected _Symptoms() As String
     Protected _Treatments() As String
     Protected _Death_Rate As Double 'ReadOnly
-    Protected _nInfected As Integer
-    Protected _nRecovered As Integer
+    Protected _nDiseases As Integer = 2
+    Protected Shared _nInfected() As Integer ' 1 = Malaria , 2 = HIVAIDS ' Store nInfected separately for each disease
+    Protected Shared _nDead() As Integer
+
     'Constructors
     Public Sub New()
-
+        ReDim _nDead(_nDiseases)
+        ReDim _nInfected(_nDiseases)
     End Sub
-    Public Sub New(Name As String, nSymptops As Integer, nTreatments As Integer, nInfected As Integer, nRecovered As Integer)
+    Public Sub New(Name As String, nSymptoms As Integer, nTreatments As Integer)
         _Name = Name
-
         'Allocate memory for Arrays
-        ReDim _Symtomps(nSymptops)
+        ReDim _Symptoms(nSymptoms)
         ReDim _Treatments(nTreatments)
-
-        'Validate Input to ensure +ve value
-        ValidateInt(nInfected)
-        ValidateInt(nRecovered)
-
-        _nInfected = nInfected
-        _nRecovered = nRecovered
+        ReDim _nDead(_nDiseases)
+        ReDim _nInfected(_nDiseases)
     End Sub
     'Property Methods
     Public Property Name() As String
@@ -51,12 +53,12 @@ Public MustInherit Class Disease 'Abstract Class
             _Name = value
         End Set
     End Property
-    Public Property Symptops(index As Integer) As String
+    Public Property Symptoms(index As Integer) As String
         Get
-            Return _Symtomps(index)
+            Return _Symptoms(index)
         End Get
         Set(value As String)
-            _Symtomps(index) = value
+            _Symptoms(index) = value
         End Set
     End Property
 
@@ -68,44 +70,47 @@ Public MustInherit Class Disease 'Abstract Class
             _Treatments(index) = value
         End Set
     End Property
-    Public Property nInfected() As Integer
-        Get
-            Return _nInfected
-        End Get
-        Set(value As Integer)
-            ValidateInt(value)
-            _nInfected = value
-        End Set
-    End Property
-    Public Property nRecovered() As Integer
-        Get
-            Return _nRecovered
-        End Get
-        Set(value As Integer)
-            ValidateInt(value)
-            _nRecovered = value
-        End Set
-    End Property
+
     Public ReadOnly Property Death_Rate() As Double 'can't change value outside the class
         Get
             Return _Death_Rate
         End Get
     End Property
 
+    Public Shared Property nInfected(index As Integer) As Integer
+        Get
+            Return _nInfected(index)
+        End Get
+        Set(value As Integer)
+            ValidateInt(value)
+            _nInfected(index) = value
+        End Set
+    End Property
+    Public Shared Property nDead(index As Integer) As Integer
+        Get
+            Return _nDead(index)
+        End Get
+        Set(value As Integer)
+            _nDead(index) = value
+        End Set
+    End Property
+
     'Utility Methods
-    Public Sub CalculateDeathRate()
-        _Death_Rate = 1 - _nRecovered / _nInfected
+    Public Sub CalculateDeathRate(DiseaseNo As Integer)
+        _Death_Rate = _nDead(DiseaseNo) / _nInfected(DiseaseNo)
     End Sub
+
     Public MustOverride Function WayOfGettingInfected() As String 'Implementation done in derived classes
     Public Shared Sub ValidateInt(ByRef num As Integer) 'What to change parameter value within the subroutine
+        'shared between class, only one copy exists in memory
         While num < 0
             num = CInt(InputBox("Please enter a postive number"))
         End While
     End Sub
-    Public Sub ResizeArray(size As Integer, e As Array) 'use enumeration to determine which array to resize
-        If e = Array.Symtomps Then
-            ReDim _Symtomps(size)
-        ElseIf e = Array.Treatments Then
+    Public Sub ResizeArray(size As Integer, e As ClassArray) 'use enumeration to determine which array to resize
+        If e = ClassArray.Symptoms Then
+            ReDim _Symptoms(size)
+        ElseIf e = ClassArray.Treatments Then
             ReDim _Treatments(size)
         End If
     End Sub
