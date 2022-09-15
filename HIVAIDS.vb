@@ -6,12 +6,14 @@
     Private _CD4_Count As Integer
 
     Public Sub New()
-
+        _nInfected(DiseaseNo.HIVAIDS) += 1
     End Sub
     Public Sub New(stage As Integer, CD4_Count As Integer, origin As String)
         _Stages = stage
         _CD4_Count = CD4_Count
         _Origin = origin
+        'increase number of HIVAIDS cases by 1
+        _nInfected(DiseaseNo.HIVAIDS) += 1
     End Sub
 
     Public ReadOnly Property Origin As String
@@ -34,6 +36,8 @@
         End Set
     End Property
 
+
+    ' Utility Methods
     Public Function DetermineStage(CD4_Count As Integer) As Integer
         Dim stage As Integer
         Select Case CD4_Count
@@ -48,11 +52,12 @@
         End Select
         Return stage
     End Function
-    Public Overrides Sub WayOfGettingInfected()
+    Public Overrides Function WayOfGettingInfected() As String
         Dim ans As Integer
         Dim way As String
+        way = "" 'initialise variable to nothing
         ans = CInt(InputBox("Please choose way of infection" & vbNewLine & "1. Through a needle" &
-                            vbNewLine & "2.Sexual activty" & vbNewLine & "3.Passed on from parent"))
+                            vbNewLine & "2. Sexual activty" & vbNewLine & "3. Passed on from parent"))
         Select Case ans
             Case 1
                 way = "Tansmitted through needle"
@@ -61,5 +66,6 @@
             Case 3
                 way = "Tansmitted through genetics"
         End Select
-    End Sub
+        Return way
+    End Function
 End Class
